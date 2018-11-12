@@ -10,7 +10,7 @@ class B24Connect:
         """
         is_token_refreshed = False
         try:
-            b24_app = Bitrix24(domain, token)
+            b24_app = Bitrix24(domain=domain, auth_token=token)
             b24_error = False
         except ValueError:
             b24_error = ValueError
