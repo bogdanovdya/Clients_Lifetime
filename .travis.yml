@@ -15,7 +15,7 @@ script: python tests.py
 after_success:
   - cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-  - docker login -e 'bgdnvdmtry@yandex.ru' -u 'bgdnvdmtry2' -p 'BaNaN0973561'
+  - docker login -u 'bgdnvdmtry2' -p 'BaNaN0973561'
   - export REPO=bgdnvdmtry2/clients_timelife
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - docker build -f Dockerfile -t $REPO:$COMMIT .
