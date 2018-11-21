@@ -16,9 +16,5 @@ after_success:
   - cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   - docker login -u 'bgdnvdmtry2' -p 'BaNaN0973561'
-  - export REPO=bgdnvdmtry2/clients_timelife
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
-  - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO
+  - docker build -f Dockerfile -t bgdnvdmtry2/clients_timelife:"from travis" .
+  - docker push bgdnvdmtry2/clients_timelife
