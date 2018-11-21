@@ -16,5 +16,5 @@ after_success:
   - cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   - docker login -u 'bgdnvdmtry2' -p 'BaNaN0973561'
-  - docker build -f Dockerfile -t bgdnvdmtry2/clients_timelife:"from travis" .
+  - docker build -f Dockerfile .
   - docker push bgdnvdmtry2/clients_timelife
