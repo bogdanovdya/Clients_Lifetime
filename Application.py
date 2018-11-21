@@ -6,7 +6,7 @@ from bx24_tools.db_connect import *
 
 class Application:
     """
-    TO DO проверка логина, отправка батча
+    TODO проверка логина, отправка батча
     """
     def __init__(self):
         self.auth_token = ''

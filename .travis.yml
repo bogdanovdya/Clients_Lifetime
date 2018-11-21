@@ -3,7 +3,14 @@ python:
   - "3.5"
   - "3.6"
 # command to install dependencies
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS clients_lifetime;'
 install:
   - pip install -r requirements.txt
 # command to run tests
 script: python tests.py
+after_success:
+  - cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
