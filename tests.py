@@ -1,6 +1,5 @@
 import unittest
 from bx24_tools.bx24_connect import B24Connect
-from bx24_tools.db_connect import DBConnect
 
 
 class ConnectTest(unittest.TestCase):
