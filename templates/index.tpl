@@ -3,3 +3,4 @@
 <p>lang is {{ lang }}</p>
 <p>auth_token is {{ auth_token }}</p>
 <p>ref_token is {{ ref_token }}</p>
+<p>call result is {{ call }}</p>
