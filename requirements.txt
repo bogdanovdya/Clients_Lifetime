@@ -21,7 +21,6 @@ portend==2.3
 pycparser==2.19
 pyOpenSSL==18.0.0
 pytz==2018.7
-pywin32==224
 requests==2.20.1
 six==1.11.0
 tempora==1.14
