@@ -7,7 +7,7 @@ class AppSetting(object):
     app_reg_url = ''
 
 
-class AppDBSetting(object):
+class DBSetting(object):
     host = 'localhost'
     database = 'clients_lifetime'
     user = 'root'

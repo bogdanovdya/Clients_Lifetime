@@ -1,6 +1,6 @@
 """тут будет коннект к бд"""
 from mysql.connector import MySQLConnection, Error
-from app_settings import AppDBSetting
+from app_settings import DBSetting
 
 
 class DBConnect:
@@ -11,10 +11,10 @@ class DBConnect:
         """
         try:
             conn = MySQLConnection(
-                host=AppDBSetting.host,
-                database=AppDBSetting.database,
-                user=AppDBSetting.user,
-                password=AppDBSetting.password
+                host=DBSetting.host,
+                database=DBSetting.database,
+                user=DBSetting.user,
+                password=DBSetting.password
             )
             return conn
 
