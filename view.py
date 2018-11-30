@@ -29,12 +29,12 @@ def index():
         post_data = get_post()
         bx24 = Application(**post_data)
         bx24.save_auth()
-        call = bx24.get_data()
+        call = bx24.get_cmp_list()
     except Exception:
-        return render_template('conn_err.html')
+        return render_template('conn_err')
     else:
         return render_template('index.html', domain=bx24.domain, lang=bx24.lang,
-                               auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call)
+                               auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call['result'])
 
 
 @app.route('/model_predict', methods=['GET', 'POST'])
