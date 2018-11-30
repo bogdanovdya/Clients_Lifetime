@@ -18,4 +18,4 @@ after_success:
   - docker login -u 'bgdnvdmtry2' -p 'BaNaN0973561'
   - docker build -f Dockerfile .
   - docker push bgdnvdmtry2/clients_timelife
-  - python router.py
+  - python app.py

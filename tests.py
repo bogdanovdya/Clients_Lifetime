@@ -1,6 +1,6 @@
 import unittest
-from bx24_tools.bx24_connect import B24Connect
-from bx24_tools.db_connect import DBConnect
+from tools.bx24_connect import B24Connect
+from tools.db_connect import DBConnect
 from mysql.connector import MySQLConnection
 
 
