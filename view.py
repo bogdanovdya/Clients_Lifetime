@@ -15,8 +15,7 @@ def get_post():
 @app.route('/install', methods=['GET', 'POST'])
 def install():
     try:
-        post_data = get_post()
-        install_app = InstallApplication(**post_data)
+        install_app = InstallApplication(**get_post())
         install_app.save_auth()
     finally:
         return render_template('install.html')
@@ -26,12 +25,11 @@ def install():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     try:
-        post_data = get_post()
-        bx24 = Application(**post_data)
+        bx24 = Application(**get_post())
         bx24.save_auth()
         call = bx24.get_cmp_list()
     except Exception:
-        return render_template('conn_err')
+        return render_template('conn_err.html')
     else:
         return render_template('index.html', domain=bx24.domain, lang=bx24.lang,
                                auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call['result'])
@@ -39,11 +37,13 @@ def index():
 
 @app.route('/model_predict', methods=['GET', 'POST'])
 def get_result():
+
     try:
-        auth_data = get_post()
-        bx24 = Application(**auth_data)
+        bx24 = Application(**get_post())
         bx24.save_auth()
+        cmp_list = request.values.getlist('companies')
+        data = bx24.get_data(cmp_list)
     except Exception:
         return render_template('conn_err.html')
     else:
-        return render_template('model_predict.html')
+        return render_template('model_predict.html', companies=cmp_list, data=data)
