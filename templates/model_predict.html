@@ -6,11 +6,14 @@
 </head>
 <body>
 {{ companies }}
-{% for da in data %}
-    {% for d in da %}
-    <p>{{ d }}</p>
-    {% endfor %}
+
+    {% for da in data %}
+
+        {% for d in da %}
+        <p>{{ d }}</p>
+        {% endfor %}
     <hr>
-{% endfor %}
+    {% endfor %}
+
 </body>
 </html>
