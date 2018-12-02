@@ -1,5 +1,7 @@
 from bitrix24.bitrix24 import Bitrix24
 from tools.db_connect import *
+import numpy as np
+import pandas as pd
 
 
 class Application:
@@ -29,10 +31,23 @@ class Application:
         return cmp_list
 
     def get_data(self, cmp_ids):
-        cmp_list = self.bx24.call('crm.company.list', {'ORDER': {'ID': 'asc'}}, {'FILTER': {'ID': cmp_ids}})
-        deal_list = self.bx24.call('crm.deal.list', {'ORDER': {'COMPANY_ID': 'asc'}},
-                                   {'FILTER': {'COMPANY_ID': cmp_ids}})
-        invoice_list = self.bx24.call('crm.invoice.list', {'ORDER': {'UF_COMPANY_ID': 'asc'}},
-                                      {'FILTER': {'UF_COMPANY_ID': cmp_ids}})
+        cmp_list = self.bx24.call('crm.company.list', {'ORDER': {'ID': 'asc'}}, {'FILTER': {'ID': cmp_ids}},
+                                  {'SELECT': ['TITLE', 'COMPANY_TYPE', 'INDUSTRY', 'REVENUE', 'EMPLOYEES']})
 
-        return [cmp_list, deal_list, invoice_list]
+        deal_list = self.bx24.call('crm.deal.list', {'ORDER': {'COMPANY_ID': 'asc'}},
+                                   {'FILTER': {'COMPANY_ID': cmp_ids}},
+                                   {'SELECT': ['PROBABILITY', 'OPPORTUNITY', 'BEGINDATE', 'CLOSEDATE', 'CLOSED',
+                                               'COMPANY_ID']})
+
+        invoice_list = self.bx24.call('crm.invoice.list', {'ORDER': {'UF_COMPANY_ID': 'asc'}},
+                                      {'FILTER': {'UF_COMPANY_ID': cmp_ids}},
+                                      {'SELECT': ['DATE_BILL', 'DATE_PAYED', 'DATE_PAY_BEFORE', 'PRICE', 'PAYED',
+                                                  'STATUS_ID', 'UF_COMPANY_ID']})
+
+        cmp_df = pd.DataFrame(cmp_list['result'])
+        deal_df = pd.DataFrame(deal_list['result'])
+        inv_df = pd.DataFrame(invoice_list['result'])
+        ret_df = cmp_df.merge(deal_df, left_on='ID', right_on='COMPANY_ID', how='outer')
+        ret_df = ret_df.merge(inv_df, left_on='COMPANY_ID', right_on='UF_COMPANY_ID', how='outer')
+        print(ret_df.head())
+        return [cmp_list['result'], deal_list['result'], invoice_list['result']]

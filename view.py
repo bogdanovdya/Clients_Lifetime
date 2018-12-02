@@ -37,7 +37,6 @@ def index():
 
 @app.route('/model_predict', methods=['GET', 'POST'])
 def get_result():
-
     try:
         bx24 = Application(**get_post())
         bx24.save_auth()
