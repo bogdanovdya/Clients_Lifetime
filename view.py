@@ -24,13 +24,16 @@ def install():
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def index():
-
-    bx24 = Application(**get_post())
-    bx24.save_auth()
-    cmp_ids = bx24.get_cmp_ids()
-    call = bx24.list_decorator(bx24.get_companies(cmp_ids, 0))
-    return render_template('index.html', domain=bx24.domain, lang=bx24.lang,
-                           auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call)
+    try:
+        bx24 = Application(**get_post())
+        bx24.save_auth()
+        cmp_ids = bx24.get_cmp_ids()
+        call = bx24.get_companies(cmp_ids)
+    except Exception:
+        return render_template('conn_err.html')
+    else:
+        return render_template('index.html', domain=bx24.domain, lang=bx24.lang,
+                               auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call)
 
 
 @app.route('/model_predict', methods=['GET', 'POST'])
