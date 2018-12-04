@@ -23,22 +23,18 @@ class Application:
         DBConnect.save_auth(self.domain, self.auth_token, self.ref_token)
 
     def list_decorator(self, foo):
-        page = 100
 
-        def make_pagination(page, arr=list()):
-            start = page
+        def make_pagination(cmp_ids, start=0, arr=[]):
             ret_arr = arr
-            print(start)
-            listing = foo(start=page)
+            listing = foo(cmp_ids, start)
             if 'result' in listing:
                 ret_arr.extend(listing['result'])
             if 'next' in listing:
-                start += 50
-                return make_pagination(start, arr=ret_arr)
+                return make_pagination(cmp_ids, start+50, arr=ret_arr)
             else:
                 return ret_arr
 
-        return make_pagination(page)
+        return make_pagination
 
     def get_cmp_ids(self, start=0, arr=[]):
         start = start
