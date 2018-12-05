@@ -1,15 +1,10 @@
-import numpy as np
 import pandas as pd
-from time import sleep
 from datetime import datetime, timedelta
 from bitrix24.bitrix24 import Bitrix24
 from tools.db_connect import *
 
 
 class Application:
-    """
-    TODO разобраться с возвратом прошлого вызова get_companies()
-    """
 
     def __init__(self, domain, lang, auth_token, ref_token):
         self.domain = domain.split('.bitrix24')[0]
@@ -27,18 +22,16 @@ class Application:
             :param foo: function
             :return: list
             """
-
             def make_pagination(cls, cmp_ids, start=0, arr=[]):
                 if start == 0:
                     ret_arr = []
                 else:
                     ret_arr = arr
-                ids = cmp_ids
-                listing = foo(cls, ids, page=start)
+                listing = foo(cls, cmp_ids, page=start)
                 if 'result' in listing:
                     ret_arr.extend(listing['result'])
                 if 'next' in listing:
-                    return make_pagination(cls, ids, start=start + 50, arr=ret_arr)
+                    return make_pagination(cls, cmp_ids, start=start + 50, arr=ret_arr)
                 else:
                     return ret_arr
 
@@ -107,7 +100,6 @@ class Application:
         :param arr: result list
         :return: list
         """
-        start = start
         if start == 0:
             cmp_ids = []
         else:
