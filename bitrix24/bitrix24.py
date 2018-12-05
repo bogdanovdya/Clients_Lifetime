@@ -83,6 +83,7 @@ class Bitrix24(object):
             # Suspend call on two second, wait for expired limitation time by Bitrix24 API
             sleep(2)
             return self.call(method, params1, params2, params3, params4)
+
         return result
 
     def refresh_tokens(self):

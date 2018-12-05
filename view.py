@@ -1,5 +1,6 @@
 from app import app
 from flask import render_template, request
+from multiprocessing import Process
 from installApplication import InstallApplication
 from indexApplicaton import Application
 
@@ -28,10 +29,12 @@ def index():
     bx24 = Application(**get_post())
     bx24.save_auth()
     cmp_ids = bx24.get_cmp_ids()
-    call = bx24.get_companies(cmp_ids)
-
-    return render_template('index.html', domain=bx24.domain, lang=bx24.lang,
-                           auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call)
+    if cmp_ids is not None:
+        call = bx24.get_companies(cmp_ids)
+        return render_template('index.html', domain=bx24.domain, lang=bx24.lang,
+                               auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call)
+    else:
+        return render_template('index.html', companies=[{'ID': 0, 'TITLE': 'Ничего не найдено'}])
 
 
 @app.route('/model_predict', methods=['GET', 'POST'])
