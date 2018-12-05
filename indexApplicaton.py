@@ -8,9 +8,8 @@ from tools.db_connect import *
 
 class Application:
     """
-    TODO почему не работает декоратор?
+    TODO разобраться с возвратом прошлого вызова get_companies()
     """
-
     def __init__(self, domain, lang, auth_token, ref_token):
         self.domain = domain.split('.bitrix24')[0]
         self.auth_token = auth_token
@@ -19,27 +18,54 @@ class Application:
         self.bx24 = Bitrix24(domain=self.domain, auth_token=self.auth_token,
                              refresh_token=self.ref_token, high_level_domain=self.lang)
 
+    class Decorators:
+        @classmethod
+        def list_decorator(cls, foo):
+            def make_pagination(cls, cmp_ids, start=0, arr=[]):
+                ids = cmp_ids
+                ret_arr = arr
+                listing = foo(cls, ids, page=start)
+                if 'result' in listing:
+                    ret_arr.extend(listing['result'])
+                if 'next' in listing:
+                    return make_pagination(cls, ids, start=start + 50, arr=ret_arr)
+                else:
+                    return ret_arr
+
+            return make_pagination
+
     def save_auth(self):
         DBConnect.save_auth(self.domain, self.auth_token, self.ref_token)
 
-    def list_decorator(self, foo):
+    @Decorators.list_decorator
+    def get_companies(self, cmp_ids, page=0):
+        return self.bx24.call('crm.company.list', {'ORDER': {'ID': 'asc'}}, {'FILTER': {'ID': cmp_ids}},
+                              {'SELECT': ['TITLE', 'COMPANY_TYPE', 'INDUSTRY', 'REVENUE', 'EMPLOYEES']},
+                              {'start': page})
 
-        def make_pagination(cmp_ids, start=0, arr=[]):
-            ret_arr = arr
-            listing = foo(cmp_ids, start)
-            if 'result' in listing:
-                ret_arr.extend(listing['result'])
-            if 'next' in listing:
-                return make_pagination(cmp_ids, start+50, arr=ret_arr)
-            else:
-                return ret_arr
+    @Decorators.list_decorator
+    def get_deals(self, cmp_ids, page=0):
+        return self.bx24.call('crm.deal.list', {'ORDER': {'COMPANY_ID': 'asc'}}, {'FILTER': {'COMPANY_ID': cmp_ids}},
+                              {'SELECT': ['PROBABILITY', 'OPPORTUNITY', 'BEGINDATE', 'CLOSEDATE', 'CLOSED',
+                                          'COMPANY_ID']}, {'start': page})
 
-        return make_pagination
+    @Decorators.list_decorator
+    def get_invoices(self, cmp_ids, page=0):
+        return self.bx24.call('crm.invoice.list', {'ORDER': {'UF_COMPANY_ID': 'asc'}},
+                              {'FILTER': {'UF_COMPANY_ID': cmp_ids}},
+                              {'SELECT': ['DATE_BILL', 'DATE_PAYED', 'DATE_PAY_BEFORE', 'PRICE', 'PAYED',
+                                          'STATUS_ID', 'UF_COMPANY_ID']}, {'start': page})
+
+    @Decorators.list_decorator
+    def get_quotes(self, cmp_ids, page=0):
+        return self.bx24.call('crm.quote.list', {'ORDER': {'COMPANY_ID': 'asc'}}, {'FILTER': {'COMPANY_ID': cmp_ids}},
+                              {'SELECT': ['COMPANY_ID', 'CLOSED', 'CLOSEDATE', 'DATE_CREATE', 'DEAL_ID',
+                                          'OPPORTUNITY', 'STATUS_ID']}, {'start': page})
 
     def get_cmp_ids(self, start=0, arr=[]):
         start = start
         ret_arr = arr
-        date = datetime.today() - timedelta(days=365*3)
+        date = datetime.today() - timedelta(days=365 * 3)
         inv_list = self.bx24.call('crm.invoice.list', {'ORDER': {'UF_COMPANY_ID': 'asc'}},
                                   {'FILTER': {'>DATE_BILL': date, '>UF_COMPANY_ID': 1}},
                                   {'SELECT': ['UF_COMPANY_ID']}, {'start': start})
@@ -51,64 +77,6 @@ class Application:
             cmp_ids = pd.DataFrame(ret_arr)
             cmp_ids = cmp_ids.drop_duplicates('UF_COMPANY_ID')
             ret_arr = cmp_ids['UF_COMPANY_ID'].tolist()
-            return ret_arr
-
-    def get_companies(self, cmp_ids, start=0, arr=[]):
-        start = start
-        ret_arr = arr
-        listing = self.bx24.call('crm.company.list', {'ORDER': {'ID': 'asc'}}, {'FILTER': {'ID': cmp_ids}},
-                                 {'SELECT': ['TITLE', 'COMPANY_TYPE', 'INDUSTRY', 'REVENUE', 'EMPLOYEES']},
-                                 {'start': start})
-        if 'result' in listing:
-            ret_arr.extend(listing['result'])
-        if 'next' in listing:
-            start += 50
-            return self.get_companies(cmp_ids, start, arr=ret_arr)
-        else:
-            return ret_arr
-
-    def get_deals(self, cmp_ids, start=0, arr=[]):
-        start = start
-        ret_arr = arr
-        listing = self.bx24.call('crm.deal.list', {'ORDER': {'COMPANY_ID': 'asc'}}, {'FILTER': {'COMPANY_ID': cmp_ids}},
-                                 {'SELECT': ['PROBABILITY', 'OPPORTUNITY', 'BEGINDATE', 'CLOSEDATE', 'CLOSED',
-                                             'COMPANY_ID']}, {'start': start})
-        if 'result' in listing:
-            ret_arr.extend(listing['result'])
-        if 'next' in listing:
-            start += 50
-            return self.get_deals(cmp_ids, start, arr=ret_arr)
-        else:
-            return ret_arr
-
-    def get_invoices(self, cmp_ids, start=0, arr=[]):
-        start = start
-        ret_arr = arr
-        listing = self.bx24.call('crm.invoice.list', {'ORDER': {'UF_COMPANY_ID': 'asc'}},
-                                 {'FILTER': {'UF_COMPANY_ID': cmp_ids}},
-                                 {'SELECT': ['DATE_BILL', 'DATE_PAYED', 'DATE_PAY_BEFORE', 'PRICE', 'PAYED',
-                                             'STATUS_ID', 'UF_COMPANY_ID']}, {'start': start})
-        if 'result' in listing:
-            ret_arr.extend(listing['result'])
-        if 'next' in listing:
-            start += 50
-            return self.get_invoices(cmp_ids, start, arr=ret_arr)
-        else:
-            return ret_arr
-
-    def get_quotes(self, cmp_ids, start=0, arr=[]):
-        start = start
-        ret_arr = arr
-        listing = self.bx24.call('crm.quote.list', {'ORDER': {'COMPANY_ID': 'asc'}},
-                                 {'FILTER': {'COMPANY_ID': cmp_ids}},
-                                 {'SELECT': ['COMPANY_ID', 'CLOSED', 'CLOSEDATE', 'DATE_CREATE', 'DEAL_ID',
-                                             'OPPORTUNITY', 'STATUS_ID']}, {'start': start})
-        if 'result' in listing:
-            ret_arr.extend(listing['result'])
-        if 'next' in listing:
-            start += 50
-            return self.get_quotes(cmp_ids, start, arr=ret_arr)
-        else:
             return ret_arr
 
     def get_data(self, cmp_ids):
