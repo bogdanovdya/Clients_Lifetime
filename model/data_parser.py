@@ -50,6 +50,15 @@ class ParserFromApp:
 
         inv_group = inv_df.groupby(by='UF_COMPANY_ID')
 
+        inv_date_max = inv_group['DATE_PAYED'].max()
+        inv_date_min = inv_group['DATE_PAYED'].min()
+        inv_month_together = pd.DataFrame()
+        inv_month_together['MONTH_TOGETHER_INV'] = (inv_date_max - inv_date_min).astype('timedelta64[h]') / (24 * 30)
+
+        inv_count = pd.DataFrame(inv_group['PAYED'].count())
+        inv_by_year = pd.DataFrame(
+            data={'DEAL_BY_YEAR': (inv_count['PAYED'] / inv_month_together['MONTH_TOGETHER_INV']) * 12})
+
         inv_quantile01 = inv_group['PRICE', 'TIME_DIFF_PAYED_BILL', 'TIME_DIFF_PAYBEF_PAYED'].quantile(0.1)
         inv_quantile09 = inv_group['PRICE', 'TIME_DIFF_PAYED_BILL', 'TIME_DIFF_PAYBEF_PAYED'].quantile(0.9)
         inv_mean = inv_group['PRICE', 'TIME_DIFF_PAYED_BILL', 'TIME_DIFF_PAYBEF_PAYED', 'PAYED',
@@ -59,6 +68,8 @@ class ParserFromApp:
         inv_result = pd.merge(inv_quantile01, inv_quantile09, on='UF_COMPANY_ID', suffixes=['_INV_Q01', '_INV_Q09'])
         inv_result1 = pd.merge(inv_mean, inv_median, on='UF_COMPANY_ID', suffixes=['_INV_MEAN', '_INV_MEDIAN'])
         inv_result = pd.merge(inv_result, inv_result1, on='UF_COMPANY_ID')
+        inv_result = pd.merge(inv_result, inv_month_together, on='UF_COMPANY_ID')
+        inv_result = pd.merge(inv_result, inv_by_year, on='UF_COMPANY_ID')
 
         return inv_result
 
