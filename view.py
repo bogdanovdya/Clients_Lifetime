@@ -40,6 +40,20 @@ def index():
         else:
             return render_template('index.html', companies=[{'ID': 0, 'TITLE': 'Ничего не найдено'}])
 
+        '''
+        чтоб все получить, пусть побудет здесь
+                if cmp_ids is not None:
+                    call_res = []
+                    for id in cmp_ids:
+                        call = bx24.get_companies(id)
+                        if call:
+                            call_res.extend(call)
+                    return render_template('index.html', domain=bx24.domain, lang=bx24.lang,
+                                   auth_token=bx24.auth_token, ref_token=bx24.ref_token, companies=call_res)
+                else:
+                    return render_template('index.html', companies=[{'ID': 0, 'TITLE': 'Ничего не найдено'}])
+        '''
+
 
 @app.route('/model_predict', methods=['GET', 'POST'])
 def get_result():
