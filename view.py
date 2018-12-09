@@ -2,6 +2,8 @@ from app import app
 from flask import render_template, request
 from installApplication import InstallApplication
 from indexApplicaton import Application
+from model.data_parser import DataParser
+from model.predictor import Predictor
 
 
 def get_post():
@@ -57,12 +59,11 @@ def index():
 
 @app.route('/model_predict', methods=['GET', 'POST'])
 def get_result():
-    try:
-        bx24 = Application(**get_post())
-        bx24.save_auth()
-        cmp_list = request.values.getlist('companies')
-        data = bx24.get_data(cmp_list)
-    except Exception:
-        return render_template('conn_err.html')
-    else:
-        return render_template('model_predict.html', companies=cmp_list, data=data)
+    bx24 = Application(**get_post())
+    bx24.save_auth()
+    cmp_list = request.values.getlist('companies')
+    data = bx24.get_data(cmp_list)
+    data_frame = DataParser.get_data_frame(data[0], data[1], data[2], data[3])
+    predict = Predictor(data_frame).make_predict()
+
+    return render_template('model_predict.html', companies=cmp_list, data=predict)

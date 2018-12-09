@@ -5,7 +5,9 @@ from tools.db_connect import *
 
 
 class Application:
-
+    """
+    TODO return get_data как словарь
+    """
     def __init__(self, domain, lang, auth_token, ref_token):
         self.domain = domain.split('.bitrix24')[0]
         self.auth_token = auth_token
@@ -53,7 +55,7 @@ class Application:
         :return: list of dict
         """
         return self.bx24.call('crm.company.list', {'ORDER': {'ID': 'asc'}}, {'FILTER': {'ID': cmp_ids}},
-                              {'SELECT': ['TITLE', 'COMPANY_TYPE', 'INDUSTRY', 'EMPLOYEES']},
+                              {'SELECT': ['TITLE', 'COMPANY_TYPE']},
                               {'start': page})
 
     @Decorators.list_decorator
