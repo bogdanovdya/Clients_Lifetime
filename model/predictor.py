@@ -15,8 +15,8 @@ class Predictor:
         :return: pandas.DataFrame
         """
         model = pickle.load(open('model/random_forest.sav', 'rb'))
-        predict = model.predict(X=self.data_frame)
-        predict = pandas.Series(predict).rename('PREDICT')
+        predict = model.predict_proba(X=self.data_frame)[:, 1]
+        print(model.predict_proba(X=self.data_frame))
+        predict = (pandas.Series(predict)*100).rename('PREDICT')
         result_df = pandas.concat([self.titles, predict], axis=1)
-
-        return result_df
+        return result_df.to_dict(orient='records')

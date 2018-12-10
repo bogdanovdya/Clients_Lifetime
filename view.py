@@ -66,4 +66,4 @@ def get_result():
     data_frame = DataParser.get_data_frame(data[0], data[1], data[2], data[3])
     predict = Predictor(data_frame).make_predict()
 
-    return render_template('model_predict.html', companies=cmp_list, data=predict)
+    return render_template('model_predict.html', data=predict)
