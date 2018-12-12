@@ -82,7 +82,7 @@ def get_result():
             for item in predict:
                 message = 'Вероятность для компании ' + item['TITLE'] + ' -- ' + str(item['PREDICT'])
                 bx24.send_message(title=item['TITLE'], content=message)
-                return render_template('index.html')
+            return render_template('index.html')
 
 
 @app.route('/bot', methods=['GET', 'POST'])
