@@ -16,4 +16,17 @@ class InstallApplication:
     def save_auth(self):
         DBConnect.save_auth(self.domain, self.auth_token, self.ref_token)
 
+    def create_bot(self):
+        return self.bx24.call('imbot.register',
+                              {
+                                  'CODE': 'newbot',
+                                  'TYPE': 'H',
+                                  'EVENT_HANDLER': 'https://5.206.88.44/bot',
+                                  'PROPERTIES': {
+                                      'NAME': 'NewBot',
+                                      'LAST_NAME': '',
+                                      'COLOR': 'blue',
+                                      'WORK_POSITION': 'data scientist'
+                                  }
+                              })
 

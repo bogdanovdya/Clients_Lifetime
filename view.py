@@ -19,6 +19,7 @@ def install():
     try:
         install_app = InstallApplication(**get_post())
         install_app.save_auth()
+        install_app.create_bot()
 
     except Exception:
         render_template('conn_err.html')
@@ -33,7 +34,6 @@ def index():
     try:
         bx24 = Application(**get_post())
         bx24.save_auth()
-        bx24.create_bot()
         cmp_ids = bx24.get_cmp_ids()
 
     except Exception:
@@ -85,4 +85,9 @@ def get_result():
                 return render_template('index.html')
 
 
+@app.route('/bot', methods=['GET', 'POST'])
+def bot_message():
+    data = request.values.to_dict()
+    print(data)
+    return 'true'
 
