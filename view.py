@@ -33,7 +33,6 @@ def index():
     try:
         bx24 = Application(**get_post())
         bx24.save_auth()
-        bx24.create_bot()
         cmp_ids = bx24.get_cmp_ids()
 
     except Exception:
