@@ -16,6 +16,4 @@ class InstallApplication:
     def save_auth(self):
         DBConnect.save_auth(self.domain, self.auth_token, self.ref_token)
 
-    def send_message(self, title, content):
-        return self.bx24.call('log.blogpost.add', {"POST_TITLE": title, "POST_MESSAGE": content})
 

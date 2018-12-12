@@ -8,6 +8,7 @@ class Application:
     """
     TODO return get_data как словарь
     """
+
     def __init__(self, domain, lang, auth_token, ref_token):
         self.domain = domain.split('.bitrix24')[0]
         self.auth_token = auth_token
@@ -24,6 +25,7 @@ class Application:
             :param foo: function
             :return: list
             """
+
             def make_pagination(cls, cmp_ids, start=0, arr=[]):
                 if start == 0:
                     ret_arr = []
@@ -45,6 +47,15 @@ class Application:
         :return:
         """
         DBConnect.save_auth(self.domain, self.auth_token, self.ref_token)
+
+    def send_message(self, title, content):
+        """
+        Отправляет сообщение в живвую ленту Битрикс24
+        :param title: string
+        :param content: string
+        :return:
+        """
+        self.bx24.call('log.blogpost.add', {"POST_TITLE": title, "POST_MESSAGE": content})
 
     @Decorators.list_decorator
     def get_companies(self, cmp_ids, page=0):
@@ -182,3 +193,4 @@ class Application:
         print(quote_df.head())
 
         return [cmp_list, deal_list, inv_list, quo_list]
+

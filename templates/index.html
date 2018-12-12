@@ -6,7 +6,7 @@
         <label for="exampleFormControlSelect2">Выберите компании для анализа:</label>
         <select multiple class="form-control" id="exampleFormControlSelect2" name="companies">
             {% for company in companies %}
-            <option value="{{ company['ID'] }}">{{ company['TITLE'] }}</option>
+                <option value="{{ company['ID'] }}">{{ company['TITLE'] }}</option>
             {% endfor %}
         </select>
     </div>
@@ -14,9 +14,8 @@
     <div class="form-group">
         <label for="inlineFormCustomSelect">Как получить данные?</label>
         <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="return_type">
-            <option selected>Выберите...</option>
+            <option value="frame" selected>Приложение</option>
             <option value="chat">Живая лента</option>
-            <option value="frame">Приложение</option>
         </select>
     </div>
 

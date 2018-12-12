@@ -19,8 +19,10 @@ def install():
     try:
         install_app = InstallApplication(**get_post())
         install_app.save_auth()
+
     except Exception:
         render_template('conn_err.html')
+
     else:
         return render_template('install.html')
 
@@ -31,9 +33,12 @@ def index():
     try:
         bx24 = Application(**get_post())
         bx24.save_auth()
+        bx24.create_bot()
         cmp_ids = bx24.get_cmp_ids()
+
     except Exception:
         return render_template('conn_err.html')
+
     else:
         if cmp_ids is not None:
             call = bx24.get_companies(cmp_ids)
@@ -59,11 +64,25 @@ def index():
 
 @app.route('/model_predict', methods=['GET', 'POST'])
 def get_result():
-    bx24 = Application(**get_post())
-    bx24.save_auth()
-    cmp_list = request.values.getlist('companies')
-    data = bx24.get_data(cmp_list)
-    data_frame = DataParser.get_data_frame(data[0], data[1], data[2], data[3])
-    predict = Predictor(data_frame).make_predict()
+    try:
+        bx24 = Application(**get_post())
+        bx24.save_auth()
+        cmp_list = request.values.getlist('companies')
+        data = bx24.get_data(cmp_list)
+        data_frame = DataParser.get_data_frame(data[0], data[1], data[2], data[3])
+        predict = Predictor(data_frame).make_predict()
 
-    return render_template('model_predict.html', data=predict)
+    except Exception:
+        return render_template('conn_err.html')
+
+    else:
+        if request.values.get('return_type') == 'frame':
+            return render_template('model_predict.html', data=predict)
+        if request.values.get('return_type') == 'chat':
+            for item in predict:
+                message = 'Вероятность для компании ' + item['TITLE'] + ' -- ' + str(item['PREDICT'])
+                bx24.send_message(title=item['TITLE'], content=message)
+                return render_template('index.html')
+
+
+
