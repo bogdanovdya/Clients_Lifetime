@@ -1,10 +1,11 @@
 import pandas as pd
 from datetime import datetime, timedelta
 from bitrix24.bitrix24 import Bitrix24
-from tools.db_connect import *
+from models import PortalAuth
+from app import db
 
 
-class Application:
+class IndexApplication:
     """
     TODO return get_data как словарь
     """
@@ -16,6 +17,7 @@ class Application:
         self.ref_token = ref_token
         self.bx24 = Bitrix24(domain=self.domain, auth_token=self.auth_token,
                              refresh_token=self.ref_token, high_level_domain=self.lang)
+        self.save_auth()
 
     class Decorators:
         @classmethod
@@ -37,6 +39,7 @@ class Application:
                 if 'next' in listing:
                     return make_pagination(cls, cmp_ids, start=start + 50, arr=ret_arr)
                 else:
+                    IndexApplication.save_auth(cls)
                     return ret_arr
 
             return make_pagination
@@ -46,11 +49,20 @@ class Application:
         Сохраняет данные OAuth в БД
         :return:
         """
-        DBConnect.save_auth(self.domain, self.auth_token, self.ref_token)
+        portal_auth = PortalAuth.query.filter_by(portal=self.domain).first()
+
+        if portal_auth is not None:
+            portal_auth.access_token = self.auth_token
+            portal_auth.refresh_token = self.ref_token
+        else:
+            portal_auth = PortalAuth(portal=self.domain, access_token=self.auth_token, refresh_token=self.ref_token)
+            db.session.add(portal_auth)
+
+        db.session.commit()
 
     def send_message(self, title, content):
         """
-        Отправляет сообщение в живвую ленту Битрикс24
+        Отправляет сообщение в живую ленту Битрикс24
         :param title: string
         :param content: string
         :return:
