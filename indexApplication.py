@@ -161,48 +161,17 @@ class IndexApplication:
 
         return [cmp_list, deal_list, invoice_list, quote_list]
 
-    def get_data_set(self, cmp_ids):
-        """
-        Тестовая функция, чтоб наверника все получить, но долгим образом.
-        :param cmp_ids:
-        :return:
-        """
-        cmp_list, deal_list, inv_list, quo_list = [], [], [], []
-
-        for id in cmp_ids:
-
-            cmp_info = self.get_companies(id)
-            if cmp_info:
-                cmp_list.extend(cmp_info)
-
-            deal_info = self.get_deals(id)
-            if deal_info:
-                deal_list.extend(deal_info)
-
-            inv_info = self.get_invoices(id)
-            if inv_info:
-                inv_list.extend(inv_info)
-
-            quo_info = self.get_quotes(id)
-            if quo_info:
-                quo_list.extend(quo_info)
-
-        cmp_df = pd.DataFrame(cmp_list)
-        cmp_df.to_csv('cmp.csv', sep=";", index=False)
-        deal_df = pd.DataFrame(deal_list)
-        deal_df.to_csv('deal.csv', sep=";", index=False)
-        inv_df = pd.DataFrame(inv_list)
-        inv_df.to_csv('inv.csv', sep=";", index=False)
-        quote_df = pd.DataFrame(quo_list)
-        quote_df.to_csv('quote.csv', sep=";", index=False)
-        print('------------------------------------------------------------------------------------------------')
-        print(cmp_df.head())
-        print('------------------------------------------------------------------------------------------------')
-        print(deal_df.head())
-        print('------------------------------------------------------------------------------------------------')
-        print(inv_df.head())
-        print('------------------------------------------------------------------------------------------------')
-        print(quote_df.head())
-
-        return [cmp_list, deal_list, inv_list, quo_list]
+    def create_webhooks(self):
+        self.bx24.call('webhook.register',
+                       {
+                           'CODE': 'newbot',
+                           'TYPE': 'H',
+                           'EVENT_HANDLER': 'https://5.206.88.44/bot',
+                           'PROPERTIES': {
+                               'NAME': 'Ваня',
+                               'LAST_NAME': 'Аналитик',
+                               'COLOR': 'blue',
+                               'WORK_POSITION': 'data scientist'
+                           }
+                       })
 

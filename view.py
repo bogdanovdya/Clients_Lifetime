@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, request
 from installApplication import InstallApplication
-from indexApplicaton import IndexApplication
+from indexApplication import IndexApplication
 from botApplication import BotApplication
 from model.data_parser import DataParser
 from model.predictor import Predictor
@@ -74,9 +74,7 @@ def get_result():
 @app.route('/bot', methods=['GET', 'POST'])
 def bot_message():
     data = request.values.to_dict()
-    print('---------------------------------------------------------------------------------------------------------')
-    print(data)
-    print('---------------------------------------------------------------------------------------------------------')
+
     if 'event' in data:
         event = data['event']
         domain = data['auth[domain]'].split('.bitrix24.')[0]
@@ -86,13 +84,39 @@ def bot_message():
         bot_app = BotApplication(domain, lang, auth_info.access_token, auth_info.refresh_token)
 
         if event == 'ONIMBOTMESSAGEADD':
+            in_message = data['data[PARAMS][MESSAGE]']
             chat_id = data['data[PARAMS][FROM_USER_ID]']
-            bot_app.send_message(chat_id=chat_id)
+            check = bot_app.check_message(in_message)
 
-        elif event == 'ONCRMINVOICEUPDATE':
+            if check['command'] == '/about':
+                bot_app.send_about(chat_id=chat_id)
+
+            elif check['command'] == '/search':
+                bot_app.get_company_by_title(check['content'], chat_id=chat_id)
+
+            elif check['command'] == '/cmp':
+                index_app = IndexApplication(domain, lang, auth_info.access_token, auth_info.refresh_token)
+                data = index_app.get_data(check['content'])
+                data_frame = DataParser.get_data_frame(data[0], data[1], data[2], data[3])
+                predict = Predictor(data_frame).make_predict()
+                message = ''
+                for item in predict:
+                    message += 'Вероятность для компании ' + item['TITLE'] + ' -- ' + str(item['PREDICT'])
+                bot_app.send_message(chat_id=chat_id, message=message)
+
+            else:
+                bot_app.send_message(chat_id=chat_id,
+                                     message='Привет, ' + data['data[USER][FIRST_NAME]'] + ' '
+                                             + data['data[USER][LAST_NAME]'] + '!')
+                bot_app.send_keyboard(chat_id=chat_id)
+
+        else:
             auth_info.event_counter += 1
             db.session.commit()
-
+            if auth_info.event_counter >= 10:
+                bot_app.send_message(message='Произошло много изменений, пора пересчитать предсказания')
+                bot_app.send_keyboard()
+                auth_info.event_counter = 0
+                db.session.commit()
 
     return 'true'
-
