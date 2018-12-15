@@ -30,6 +30,10 @@ class InstallApplication:
         db.session.commit()
 
     def create_bot(self):
+        """
+        Создает на портале бота и привязывает вебхук
+        :return:
+        """
         self.bx24.call('imbot.register',
                        {
                            'CODE': 'newbot',
@@ -42,3 +46,13 @@ class InstallApplication:
                                'WORK_POSITION': 'data scientist'
                            }
                        })
+
+    def create_webhooks(self):
+        """
+        Создает на портале вебхуки связанные с обновлениями сделок и счетов
+        :return:
+        """
+        self.bx24.call('event.bind', {'event': 'ONCRMINVOICEADD'}, {'handler': 'https://5.206.88.44/bot'})
+        self.bx24.call('event.bind', {'event': 'ONCRMINVOICEUPDATE'}, {'handler': 'https://5.206.88.44/bot'})
+        self.bx24.call('event.bind', {'event': 'ONCRMDEALADD'}, {'handler': 'https://5.206.88.44/bot'})
+        self.bx24.call('event.bind', {'event': 'ONCRMDEALUPDATE'}, {'handler': 'https://5.206.88.44/bot'})

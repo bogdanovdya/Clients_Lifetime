@@ -1,20 +1,17 @@
 import unittest
-from tools.bx24_connect import B24Connect
-from tools.db_connect import DBConnect
-from mysql.connector import MySQLConnection
+from app import app, db
+from models import PortalAuth
 
 
 class ConnectTest(unittest.TestCase):
 
-    def test_bx24_conn(self):
-        auth = B24Connect.auth('das', 'asd')
-        self.assertEqual(auth['err'], False)
-
     def test_db_conn(self):
-        conn = DBConnect.connect()
-        isclass = isinstance(conn, MySQLConnection)
-        self.assertEqual(isclass, True)
-        conn.close()
+        auth_info = PortalAuth(portal='portal', access_token='access_token', refresh_token='refresh_token')
+        db.session.add(auth_info)
+        db.session.commit()
+        auth_info = PortalAuth.query.filter_by(portal='portal').first()
+        access_token = auth_info.access_token
+        self.assertEqual(access_token, 'access_token')
 
 
 class AppTest(unittest.TestCase):

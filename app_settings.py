@@ -9,7 +9,7 @@ class Bitrix24Setting(object):
 
 
 class AppSetting(object):
-    DEBUG = False
+    DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:@localhost/clients_lifetime'
     MAIL_SERVER = os.environ.get('MAIL_SERVER')

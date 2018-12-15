@@ -30,6 +30,7 @@ def internal_error(error):
 @app.route('/install', methods=['GET', 'POST'])
 def install():
     install_app = InstallApplication(**get_post())
+    install_app.create_webhooks()
     install_app.create_bot()
     return render_template('install.html')
 
