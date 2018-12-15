@@ -7,6 +7,7 @@ services:
   - docker
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS clients_lifetime;'
+  - mysql -e 'CREATE TABLE IF NOT EXISTS clients_lifetime.portal_auth;'
 install:
   - pip install -r requirements.txt
 script: python tests.py
