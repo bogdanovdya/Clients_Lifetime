@@ -6,9 +6,6 @@ from app import db
 
 
 class IndexApplication:
-    """
-    TODO return get_data как словарь
-    """
 
     def __init__(self, domain, lang, auth_token, ref_token):
         self.domain = domain.split('.bitrix24')[0]
@@ -159,19 +156,6 @@ class IndexApplication:
         invoice_list = self.get_invoices(cmp_ids)
         quote_list = self.get_quotes(cmp_ids)
 
-        return [cmp_list, deal_list, invoice_list, quote_list]
+        return {'cmp_list': cmp_list, 'deal_list': deal_list, 'inv_list': invoice_list, 'quote_list': quote_list}
 
-    def create_webhooks(self):
-        self.bx24.call('webhook.register',
-                       {
-                           'CODE': 'newbot',
-                           'TYPE': 'H',
-                           'EVENT_HANDLER': 'https://5.206.88.44/bot',
-                           'PROPERTIES': {
-                               'NAME': 'Ваня',
-                               'LAST_NAME': 'Аналитик',
-                               'COLOR': 'blue',
-                               'WORK_POSITION': 'data scientist'
-                           }
-                       })
 
