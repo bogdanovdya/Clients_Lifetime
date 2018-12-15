@@ -1,4 +1,4 @@
-from app import app, context
+from app import app, context, db
 import view
 
 if __name__ == '__main__':

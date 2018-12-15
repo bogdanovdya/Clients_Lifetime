@@ -1,10 +1,11 @@
 import pandas as pd
 from datetime import datetime, timedelta
 from bitrix24.bitrix24 import Bitrix24
-from tools.db_connect import *
+from models import PortalAuth
+from app import db
 
 
-class Application:
+class IndexApplication:
     """
     TODO return get_data как словарь
     """
@@ -16,6 +17,7 @@ class Application:
         self.ref_token = ref_token
         self.bx24 = Bitrix24(domain=self.domain, auth_token=self.auth_token,
                              refresh_token=self.ref_token, high_level_domain=self.lang)
+        self.save_auth()
 
     class Decorators:
         @classmethod
@@ -37,6 +39,7 @@ class Application:
                 if 'next' in listing:
                     return make_pagination(cls, cmp_ids, start=start + 50, arr=ret_arr)
                 else:
+                    IndexApplication.save_auth(cls)
                     return ret_arr
 
             return make_pagination
@@ -46,11 +49,20 @@ class Application:
         Сохраняет данные OAuth в БД
         :return:
         """
-        DBConnect.save_auth(self.domain, self.auth_token, self.ref_token)
+        portal_auth = PortalAuth.query.filter_by(portal=self.domain).first()
+
+        if portal_auth is not None:
+            portal_auth.access_token = self.auth_token
+            portal_auth.refresh_token = self.ref_token
+        else:
+            portal_auth = PortalAuth(portal=self.domain, access_token=self.auth_token, refresh_token=self.ref_token)
+            db.session.add(portal_auth)
+
+        db.session.commit()
 
     def send_message(self, title, content):
         """
-        Отправляет сообщение в живвую ленту Битрикс24
+        Отправляет сообщение в живую ленту Битрикс24
         :param title: string
         :param content: string
         :return:
@@ -149,48 +161,17 @@ class Application:
 
         return [cmp_list, deal_list, invoice_list, quote_list]
 
-    def get_data_set(self, cmp_ids):
-        """
-        Тестовая функция, чтоб наверника все получить, но долгим образом.
-        :param cmp_ids:
-        :return:
-        """
-        cmp_list, deal_list, inv_list, quo_list = [], [], [], []
-
-        for id in cmp_ids:
-
-            cmp_info = self.get_companies(id)
-            if cmp_info:
-                cmp_list.extend(cmp_info)
-
-            deal_info = self.get_deals(id)
-            if deal_info:
-                deal_list.extend(deal_info)
-
-            inv_info = self.get_invoices(id)
-            if inv_info:
-                inv_list.extend(inv_info)
-
-            quo_info = self.get_quotes(id)
-            if quo_info:
-                quo_list.extend(quo_info)
-
-        cmp_df = pd.DataFrame(cmp_list)
-        cmp_df.to_csv('cmp.csv', sep=";", index=False)
-        deal_df = pd.DataFrame(deal_list)
-        deal_df.to_csv('deal.csv', sep=";", index=False)
-        inv_df = pd.DataFrame(inv_list)
-        inv_df.to_csv('inv.csv', sep=";", index=False)
-        quote_df = pd.DataFrame(quo_list)
-        quote_df.to_csv('quote.csv', sep=";", index=False)
-        print('------------------------------------------------------------------------------------------------')
-        print(cmp_df.head())
-        print('------------------------------------------------------------------------------------------------')
-        print(deal_df.head())
-        print('------------------------------------------------------------------------------------------------')
-        print(inv_df.head())
-        print('------------------------------------------------------------------------------------------------')
-        print(quote_df.head())
-
-        return [cmp_list, deal_list, inv_list, quo_list]
+    def create_webhooks(self):
+        self.bx24.call('webhook.register',
+                       {
+                           'CODE': 'newbot',
+                           'TYPE': 'H',
+                           'EVENT_HANDLER': 'https://5.206.88.44/bot',
+                           'PROPERTIES': {
+                               'NAME': 'Ваня',
+                               'LAST_NAME': 'Аналитик',
+                               'COLOR': 'blue',
+                               'WORK_POSITION': 'data scientist'
+                           }
+                       })
 
