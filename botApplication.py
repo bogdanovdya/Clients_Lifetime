@@ -14,10 +14,9 @@ class BotApplication:
     def send_message(self, chat_id=1, message='Привет!'):
         """
         Отправка сообщения от чат-бота
-        :param chat_id: Идентификатор диалога, это либо USER_ID пользователя, либо chatXX - где XX идентификатор чата,
-                        передается в событии ONIMBOTMESSAGEADD и ONIMJOINCHAT
-        :param message: Тест сообщения
-        :return:
+        :param chat_id: user or chat ID
+        :param message: message text
+        :return: message in chat
         """
         self.bx24.call('imbot.message.add',
                        {
@@ -26,6 +25,11 @@ class BotApplication:
                        })
 
     def send_keyboard(self, chat_id=1):
+        """
+        Отправляет сообщение с командами для пользователя
+        :param chat_id: user or chat ID
+        :return: message in chat
+        """
         self.bx24.call('imbot.message.add', {'DIALOG_ID': chat_id},
                        {
                            'MESSAGE': '[send=/about]Обо мне[/send] [br] '
@@ -34,6 +38,11 @@ class BotApplication:
                        })
 
     def send_about(self, chat_id=1):
+        """
+        Отправялет сообщение с информацией о боте
+        :param chat_id: user or chat ID
+        :return: message in chat
+        """
         self.bx24.call('imbot.message.add',
                        {
                            'DIALOG_ID': chat_id,
@@ -45,11 +54,25 @@ class BotApplication:
                        })
 
     def check_message(self, message):
-        command = message.split(' ')[0]
-        content = message.split(command)[1][1:]
-        return {'command': command, 'content': content}
+        """
+        Парсит сообщение на комманды, если есть
+        :param message: input message
+        :return: command and content
+        """
+        if message[0] == '/':
+            command = message.split(' ')[0]
+            content = message.split(command)[1][1:]
+            return {'command': command, 'content': content}
+        else:
+            return {'command': '', 'content': message}
 
     def get_company_by_title(self, title, chat_id=1):
+        """
+        Ищет подхоящие комании по названию
+        :param title: company title
+        :param chat_id: user or chat ID
+        :return: message in chat
+        """
         call = self.bx24.call('crm.company.list', {'FILTER': {'>=TITLE': title}},
                               {'SELECT': ['ID', 'TITLE']})
         result = call['result']
