@@ -21,6 +21,9 @@ class IApplication:
         """
         portal_auth = PortalAuth.query.filter_by(portal=self.domain).first()
 
+        self.auth_token = self.bx24.auth_token
+        self.ref_token = self.bx24.refresh_token
+
         if portal_auth is not None:
             portal_auth.access_token = self.auth_token
             portal_auth.refresh_token = self.ref_token
