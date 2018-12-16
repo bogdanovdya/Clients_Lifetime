@@ -17,3 +17,10 @@ COPY app.py app_settings.py botApplication.py indexApplication.py installApplica
 
 ENV FLASK_APP main.py
 
+RUN chown -R main:main ./
+
+USER root
+
+EXPOSE 443
+
+ENTRYPOINT ["./boot.sh"]
