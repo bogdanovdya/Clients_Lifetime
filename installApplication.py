@@ -1,6 +1,7 @@
 from bitrix24.bitrix24 import Bitrix24
 from models import PortalAuth
 from app import db
+from app_settings import Bitrix24Setting
 
 
 class InstallApplication:
@@ -36,9 +37,9 @@ class InstallApplication:
         """
         self.bx24.call('imbot.register',
                        {
-                           'CODE': 'newbot',
+                           'CODE': 'datascientist',
                            'TYPE': 'H',
-                           'EVENT_HANDLER': 'https://5.206.88.44/bot',
+                           'EVENT_HANDLER': Bitrix24Setting.bot_url,
                            'PROPERTIES': {
                                'NAME': 'Ваня',
                                'LAST_NAME': 'Аналитик',
@@ -52,7 +53,7 @@ class InstallApplication:
         Создает на портале вебхуки связанные с обновлениями сделок и счетов
         :return:
         """
-        self.bx24.call('event.bind', {'event': 'ONCRMINVOICEADD'}, {'handler': 'https://5.206.88.44/bot'})
-        self.bx24.call('event.bind', {'event': 'ONCRMINVOICEUPDATE'}, {'handler': 'https://5.206.88.44/bot'})
-        self.bx24.call('event.bind', {'event': 'ONCRMDEALADD'}, {'handler': 'https://5.206.88.44/bot'})
-        self.bx24.call('event.bind', {'event': 'ONCRMDEALUPDATE'}, {'handler': 'https://5.206.88.44/bot'})
+        self.bx24.call('event.bind', {'event': 'ONCRMINVOICEADD'}, {'handler': Bitrix24Setting.bot_url})
+        self.bx24.call('event.bind', {'event': 'ONCRMINVOICEUPDATE'}, {'handler': Bitrix24Setting.bot_url})
+        self.bx24.call('event.bind', {'event': 'ONCRMDEALADD'}, {'handler': Bitrix24Setting.bot_url})
+        self.bx24.call('event.bind', {'event': 'ONCRMDEALUPDATE'}, {'handler': Bitrix24Setting.bot_url})
