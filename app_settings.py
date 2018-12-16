@@ -11,7 +11,7 @@ class Bitrix24Setting(object):
 
 
 class AppSetting(object):
-    DEBUG = True
+    DEBUG = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://bb553609766361:d7963d1a@us-cdbr-iron-east-01.cleardb.net/heroku_8058959d040da1a'
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
