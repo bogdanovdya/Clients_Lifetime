@@ -93,7 +93,7 @@ def bot_message():
             elif check['command'] == '/cmp':
                 index_app = IndexApplication(domain, lang, auth_info.access_token, auth_info.refresh_token)
                 data = index_app.get_data(check['content'])
-                data_frame = DataParser.get_data_frame(data[0], data[1], data[2], data[3])
+                data_frame = DataParser.get_data_frame(**data)
                 predict = Predictor(data_frame).make_predict()
                 message = ''
                 for item in predict:
