@@ -73,7 +73,7 @@ def bot_message():
 
     if 'event' in data:
         event = data['event']
-        domain = data['auth[domain]'].split('.bitrix24.')[0]
+        domain = data['auth[domain]']
         lang = data['auth[domain]'].split('.bitrix24.')[1]
 
         auth_info = PortalAuth.query.filter_by(portal=domain).first()
@@ -114,5 +114,7 @@ def bot_message():
                 bot_app.send_keyboard()
                 auth_info.event_counter = 0
                 db.session.commit()
+
+        bot_app.save_auth()
 
     return 'true'
