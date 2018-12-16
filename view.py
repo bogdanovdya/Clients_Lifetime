@@ -73,7 +73,7 @@ def bot_message():
 
     if 'event' in data:
         event = data['event']
-        domain = data['auth[domain]']
+        domain = data['auth[domain]'].split('.bitrix24.')[0]
         lang = data['auth[domain]'].split('.bitrix24.')[1]
 
         auth_info = PortalAuth.query.filter_by(portal=domain).first()
