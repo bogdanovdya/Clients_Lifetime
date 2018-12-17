@@ -83,7 +83,23 @@
     <div class="ajax-informer"></div>
 
 </div>
-
+<script>
+    function tableSort() {
+        for (let i = 1; i <= 3; i++) {
+            $(document).ready(function () {
+                $('#table' + i.toString()).DataTable({
+                        "searching": false,
+                        "lengthChange": false,
+                        "pageLength": 50,
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Russian.json"
+                        }
+                    }
+                );
+            });
+        }
+    }
+</script>
 {% endblock %}
 
 
