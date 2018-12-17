@@ -1,32 +1,97 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-<form method="get" action="{{ url_for('get_result') }}">
-    <div class="form-group">
-        <label for="exampleFormControlSelect2">Выберите компании для анализа:</label>
-        <select multiple class="form-control" id="exampleFormControlSelect2" name="companies">
-            {% for company in companies %}
-                <option value="{{ company['ID'] }}">{{ company['TITLE'] }}</option>
-            {% endfor %}
-        </select>
+<div id="app" class="container-fluid" style="font: 15px OpenSans-Semibold, Helvetica Neue, Arial, Helvetica, sans-serif;">
+
+    <div class="tabs">
+        <input type="radio" name="inset" value="" id="tab_1" checked>
+        <label for="tab_1">Активные</label>
+
+        <input type="radio" name="inset" value="" id="tab_2">
+        <label for="tab_2">Спящие</label>
+
+        <input type="radio" name="inset" value="" id="tab_3">
+        <label for="tab_3">Потерянные</label>
+        <div id="txt_1">
+            <table id="table1" class="uk-table uk-table-hover uk-table-striped">
+                <thead>
+                <tr>
+                    <th style="width: 31%">Компания</th>
+                    <th style="width: 23%; text-align: center">
+                        платы за 3 месяца
+                    </th>
+                    <th style="width: 23%; text-align: center">
+                        3-6 месяцев назад
+                    </th>
+                    <th style="width: 23%; text-align: center">
+                        > 6 месяцев назад
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="active" class="searchable">
+
+                </tbody>
+            </table>
+        </div>
+
+        <div id="txt_2">
+            <table id="table2" class="uk-table uk-table-hover uk-table-striped">
+                <thead>
+                <tr>
+                    <th style="width: 31%">Компания</th>
+                    <th style="width: 23%; text-align: center">
+                        платы за 3 месяца
+                    </th>
+                    <th style="width: 23%; text-align: center">
+                        3-6 месяцев назад
+                    </th>
+                    <th style="width: 23%; text-align: center">
+                        > 6 месяцев назад
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="sleeping" class="searchable">
+
+                </tbody>
+            </table>
+        </div>
+
+        <div id="txt_3">
+            <table id="table3" class="uk-table uk-table-hover uk-table-striped">
+                <thead>
+                <tr>
+                    <th style="width: 31%">Компания</th>
+                    <th style="width: 23%; text-align: center">
+                        платы за 3 месяца
+                    </th>
+                    <th style="width: 23%; text-align: center">
+                        3-6 месяцев назад
+                    </th>
+                    <th style="width: 23%; text-align: center">
+                        > 6 месяцев назад
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="lost" class="searchable">
+
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
-    <div class="form-group">
-        <label for="inlineFormCustomSelect">Как получить данные?</label>
-        <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="return_type">
-            <option value="frame" selected>Приложение</option>
-            <option value="chat">Живая лента</option>
-        </select>
-    </div>
+    <div class="ajax-informer"></div>
 
-    <!--Проброс с индекса на следующую страницу, щито поделать -->
-    <input type="hidden" name="DOMAIN" value="{{ request.args.get('DOMAIN', domain) }}">
-    <input type="hidden" name="LANG" value="{{ request.args.get('LANG', lang) }}">
-    <input type="hidden" name="AUTH_ID" value="{{ request.args.get('AUTH_ID', auth_token) }}">
-    <input type="hidden" name="REFRESH_ID" value="{{ request.args.get('REFRESH_ID', ref_token) }}">
-    <!--Проброс с индекса на следующую страницу, щито поделать -->
-    <button type="submit" class="btn btn-outline-primary">Выбрать</button>
-</form>
+</div>
+
 {% endblock %}
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/css/uikit.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/dataTables.uikit.min.css"/>
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/dataTables.uikit.min.js"></script>
 
 
