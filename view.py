@@ -39,14 +39,23 @@ def install():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     index_app = IndexApplication(**get_post())
-    cmp_ids = index_app.get_cmp_ids()
+    cmp_ids_3 = index_app.get_cmp_ids(days_start=31 * 3)
+    cmp_ids_3_6 = index_app.get_cmp_ids(days_start=31 * 6, days_finish=31 * 3)
+    cmp_ids_6 = index_app.get_cmp_ids(days_finish=31 * 6)
 
-    if cmp_ids is not None:
-        call = index_app.get_companies(cmp_ids)
-        return render_template('index.html', domain=index_app.domain, lang=index_app.lang,
-                               auth_token=index_app.auth_token, ref_token=index_app.ref_token, companies=call)
-    else:
-        return render_template('index.html', companies=[{'ID': 0, 'TITLE': 'Ничего не найдено'}])
+    call_result = {}
+    if cmp_ids_3 is not None:
+        call = index_app.get_companies(cmp_ids_3)
+        call_result['cmp_ids_3'] = call
+    if cmp_ids_6 is not None:
+        call = index_app.get_companies(cmp_ids_3_6)
+        call_result['cmp_ids_3_6'] = call
+    if cmp_ids_6 is not None:
+        call = index_app.get_companies(cmp_ids_6)
+        call_result['cmp_ids_6'] = call
+
+    return render_template('index.html', domain=index_app.domain, lang=index_app.lang,
+                           auth_token=index_app.auth_token, ref_token=index_app.ref_token, companies=call_result)
 
 
 @app.route('/model_predict', methods=['GET', 'POST'])

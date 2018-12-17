@@ -88,11 +88,13 @@ class IndexApplication(IApplication):
                               {'SELECT': ['COMPANY_ID', 'CLOSED', 'CLOSEDATE', 'DATE_CREATE', 'DEAL_ID',
                                           'OPPORTUNITY', 'STATUS_ID']}, {'start': page})
 
-    def get_cmp_ids(self, start=0, arr=[]):
+    def get_cmp_ids(self, start=0, arr=[], days_start=365, days_finish=0):
         """
         Возвращает список ID компаний, которые имели коммерческую выгода за последний год
         :param start: pagination counter
         :param arr: result list
+        :param days_start: begin of time_period
+        :param days_finish: end of time_period
         :return: list
         """
         if start == 0:
@@ -100,14 +102,16 @@ class IndexApplication(IApplication):
         else:
             cmp_ids = arr
 
-        date = datetime.today() - timedelta(days=365)
+        finish_date = datetime.today() - timedelta(days=days_finish)
+        start_date = datetime.today() - timedelta(days=days_start)
         inv_list = self.bx24.call('crm.invoice.list', {'ORDER': {'UF_COMPANY_ID': 'asc'}},
-                                  {'FILTER': {'>DATE_BILL': date, '>UF_COMPANY_ID': 1}},
+                                  {'FILTER': {'>DATE_BILL': start_date, '<DATE_BILL': finish_date,
+                                              '>UF_COMPANY_ID': 1}},
                                   {'SELECT': ['UF_COMPANY_ID']}, {'start': start})
         if 'result' in inv_list:
             cmp_ids.extend(inv_list['result'])
         if 'next' in inv_list:
-            return self.get_cmp_ids(start=start + 50, arr=cmp_ids)
+            return self.get_cmp_ids(start=start + 50, arr=cmp_ids, days_start=days_start, days_finish=days_finish)
         else:
             # Очистка дубликатов через пандас, потому как массив словарей
             cmp_ids = pd.DataFrame(cmp_ids)

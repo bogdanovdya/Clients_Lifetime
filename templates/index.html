@@ -29,7 +29,7 @@
                 </tr>
                 </thead>
                 <tbody id="active" class="searchable">
-                {% for company in companies %}
+                {% for company in companies['cmp_ids_3] %}
                     <tr>
                         <td>{{ company['TITLE'] }}</td>
                         <td>{{ company['ID'] }}</td>
@@ -58,7 +58,7 @@
                 </tr>
                 </thead>
                 <tbody id="sleeping" class="searchable">
-                {% for company in companies %}
+                {% for company in companies['cmp_ids_3_6'] %}
                     <tr>
                         <td>{{ company['TITLE'] }}</td>
                         <td>{{ company['ID'] }}</td>
@@ -87,7 +87,7 @@
                 </tr>
                 </thead>
                 <tbody id="lost" class="searchable">
-                {% for company in companies %}
+                {% for company in companies['cmp_ids_6'] %}
                     <tr>
                         <td>{{ company['TITLE'] }}</td>
                         <td>{{ company['ID'] }}</td>
