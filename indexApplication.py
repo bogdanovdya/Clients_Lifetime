@@ -105,7 +105,7 @@ class IndexApplication(IApplication):
         finish_date = datetime.today() - timedelta(days=days_finish)
         start_date = datetime.today() - timedelta(days=days_start)
         inv_list = self.bx24.call('crm.invoice.list', {'ORDER': {'UF_COMPANY_ID': 'asc'}},
-                                  {'FILTER': {'>DATE_BILL': start_date, 
+                                  {'FILTER': {'<DATE_BILL': finish_date,
                                               '>UF_COMPANY_ID': 1}},
                                   {'SELECT': ['UF_COMPANY_ID']}, {'start': start})
         if 'result' in inv_list:
