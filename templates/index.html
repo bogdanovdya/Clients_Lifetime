@@ -29,7 +29,14 @@
                 </tr>
                 </thead>
                 <tbody id="active" class="searchable">
-
+                {% for company in companies %}
+                    <tr>
+                        <td>{{ company['TITLE'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -51,7 +58,14 @@
                 </tr>
                 </thead>
                 <tbody id="sleeping" class="searchable">
-
+                {% for company in companies %}
+                    <tr>
+                        <td>{{ company['TITLE'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -73,7 +87,14 @@
                 </tr>
                 </thead>
                 <tbody id="lost" class="searchable">
-
+                {% for company in companies %}
+                    <tr>
+                        <td>{{ company['TITLE'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                        <td>{{ company['ID'] }}</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
