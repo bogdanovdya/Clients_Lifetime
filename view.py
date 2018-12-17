@@ -43,19 +43,22 @@ def index():
     cmp_ids_3_6 = index_app.get_cmp_ids(days_start=31 * 6, days_finish=31 * 3)
     cmp_ids_6 = index_app.get_cmp_ids(days_finish=31 * 6)
 
-    call_result = {}
+    call_result_3 = []
+    call_result_3_6 = []
+    call_result_6 = []
     if cmp_ids_3 is not None:
         call = index_app.get_companies(cmp_ids_3)
-        call_result['cmp_ids_3'] = call
+        call_result_3 = call
     if cmp_ids_6 is not None:
         call = index_app.get_companies(cmp_ids_3_6)
-        call_result['cmp_ids_3_6'] = call
+        call_result_3_6 = call
     if cmp_ids_6 is not None:
         call = index_app.get_companies(cmp_ids_6)
-        call_result['cmp_ids_6'] = call
+        call_result_6 = call
 
     return render_template('index.html', domain=index_app.domain, lang=index_app.lang,
-                           auth_token=index_app.auth_token, ref_token=index_app.ref_token, companies=call_result)
+                           auth_token=index_app.auth_token, ref_token=index_app.ref_token, companies_3=call_result_3,
+                           companies_6=call_result_6, companies_3_6=call_result_3_6)
 
 
 @app.route('/model_predict', methods=['GET', 'POST'])
