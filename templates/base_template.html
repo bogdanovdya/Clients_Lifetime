@@ -22,6 +22,102 @@
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.10.19/js/dataTables.uikit.min.js"></script>
+
+    <style>
+        table {
+            width: 100%;
+            text-align: center;
+        }
+
+        .tabs {
+            width: 100%;
+            padding: 0px;
+            margin: 0 auto;
+            text-align: right;
+        }
+
+        .tabs > input {
+            display: none;
+
+        }
+
+        .tabs > div {
+            display: none;
+            padding: 12px;
+            background: #FFFFFF;
+            text-align: left;
+        }
+
+        .tabs > label {
+            display: inline-block;
+            padding: 7px;
+            text-align: center;
+            color: #666666;
+            cursor: pointer;
+            width: 22%;
+            background: #FFFFFF;
+            font-weight: bolder;
+        }
+
+        .tabs > label:hover {
+            color: #2067b0;
+        }
+
+        .tabs > input:checked + label:hover {
+        }
+
+        .tabs > input:checked + label {
+            color: #1058d0;
+            border-bottom: #1058d0 2px solid;
+        }
+
+        .tabs > input:checked + label > span {
+            border-bottom: none;
+        }
+
+        #tab_1:checked ~ #txt_1,
+        #tab_2:checked ~ #txt_2,
+        #tab_3:checked ~ #txt_3 {
+            display: block;
+        }
+
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s;
+            position: relative;
+            border: 1px solid;
+            background-color: white;
+            text-align: center;
+            max-height: 400px;
+            overflow: scroll;
+            right: 50%;
+            z-index: 999999
+        }
+
+        td:hover .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .over {
+            position: absolute;
+        }
+
+        .over:hover .overlay {
+            display: block;
+        }
+
+        th:hover .overlay {
+            display: block;
+        }
+
+        .hidden_table {
+            width: 300px;
+            font-size: 10px;
+        }
+
+    </style>
 </head>
 <body>
 <div class="container mt-5">
