@@ -40,8 +40,8 @@ def install():
 def index():
     index_app = IndexApplication(**get_post())
     cmp_ids_3 = index_app.get_cmp_ids(days_start=31 * 3)
-    cmp_ids_3_6 = index_app.get_cmp_ids(days_start=31 * 6, days_finish=31 * 3)
-    cmp_ids_6 = index_app.get_cmp_ids(days_finish=31 * 6)
+    cmp_ids_3_6 = index_app.get_cmp_ids(days_start=31 * 3)
+    cmp_ids_6 = index_app.get_cmp_ids(days_start=31 * 3)
 
     call_result_3 = []
     call_result_3_6 = []
