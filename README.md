@@ -5,7 +5,7 @@
 
 1) Change params in app_settings.py
 2) Change port in app.run() via main.py
-3) python router.py or gunicorn main:app
+3) python main.py or gunicorn main:app
 4) ???
 5) PROFIT!
 
